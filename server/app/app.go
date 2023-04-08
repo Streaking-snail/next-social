@@ -12,5 +12,6 @@ func Run() {
 			"message": "pong",
 		})
 	})
+
 	r.Run(":8282")
 }
