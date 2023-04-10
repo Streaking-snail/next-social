@@ -6,12 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var AuthorisedRepository = new(authorisedRepository)
-
-type authorisedRepository struct {
-	baseRepository
-}
-
 func Run() {
 
 	//r := gin.Default()

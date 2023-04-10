@@ -1,18 +1,24 @@
 package config
 
 import (
-	"github.com/spf13/viper"
+	"crypto/md5"
+	"fmt"
+	"strings"
+
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
+var GlobalCfg *Config
+
 type Config struct {
-	Debug              bool
-	Demo               bool
-	Container          bool
-	DB                 string
+	Debug     bool
+	Demo      bool
+	Container bool
+	DB        string
 	//Server             *Server
-	Mysql              *Mysql
-	Redis              *Redis
+	Mysql *Mysql
+	Redis *Redis
 	//Sqlite             *Sqlite
 	ResetPassword      string
 	ResetTotp          string
@@ -95,7 +101,8 @@ func SetupConfig() (*Config, error) {
 	md5Sum := fmt.Sprintf("%x", md5.Sum([]byte(config.EncryptionKey)))
 	config.EncryptionPassword = []byte(md5Sum)
 
-	
+	return config, nil
+
 }
 
 func init() {
@@ -105,5 +112,3 @@ func init() {
 		panic(err)
 	}
 }
-
-

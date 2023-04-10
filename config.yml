@@ -1,0 +1,9 @@
+debug: true
+demo: false
+db: mysql
+mysql:
+  hostname: localhost
+  port: 3306
+  username: next-social
+  password: next-social
+  database: next-social
