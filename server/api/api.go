@@ -1,32 +1,48 @@
 package api
 
 import (
-	"next-social/server/common/maps"
+	"net/http"
 	"next-social/server/common/nt"
 	"next-social/server/dto"
 	"next-social/server/global/cache"
 	"next-social/server/model"
+
 	"github.com/gin-gonic/gin"
 )
 
-
-func Fail(c *gin.Context, code int, message string) error {
-	return c.JSON(200, maps.Map{
+func Fail(c *gin.Context, code int, message string) {
+	c.JSON(http.StatusOK, gin.H{
 		"code":    code,
 		"message": message,
 	})
+	// return c.JSON(200, maps.Map{
+	// 	"code":    code,
+	// 	"message": message,
+	// })
 }
 
-func FailWithData(c *gin.Context, code int, message string, data interface{}) error {
-	return c.JSON(200, maps.Map{
+func FailWithData(c *gin.Context, code int, message string, data interface{}) {
+	// return c.JSON(200, maps.Map{
+	// 	"code":    code,
+	// 	"message": message,
+	// 	"data":    data,
+	// })
+	c.JSON(http.StatusOK, gin.H{
 		"code":    code,
 		"message": message,
 		"data":    data,
 	})
 }
 
-func Success(c *gin.Context, data interface{}) error {
-	return c.JSON(200, maps.Map{
+func ShowError(c *gin.Context, msg interface{}) {
+	c.JSON(http.StatusOK, gin.H{
+		"code": 400,
+		"msg":  msg,
+	})
+}
+
+func Success(c *gin.Context, data interface{}) {
+	c.JSON(http.StatusOK, gin.H{
 		"code":    1,
 		"message": "success",
 		"data":    data,
@@ -34,11 +50,12 @@ func Success(c *gin.Context, data interface{}) error {
 }
 
 func GetToken(c *gin.Context) string {
-	token := c.Request().Header.Get(nt.Token)
+	//token := c.Request().Header.Get(nt.Token)
+	token := c.GetHeader(nt.Token)
 	if len(token) > 0 {
 		return token
 	}
-	return c.QueryParam(nt.Token)
+	return c.Param(nt.Token)
 }
 
 func GetCurrentAccount(c *gin.Context) (*model.User, bool) {
