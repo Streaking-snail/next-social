@@ -4,6 +4,6 @@ db: mysql
 mysql:
   hostname: localhost
   port: 3306
-  username: next-social
-  password: next-social
+  username: root
+  password: 123456
   database: next-social

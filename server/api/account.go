@@ -3,18 +3,15 @@ package api
 import (
 	"next-social/server/dto"
 	"next-social/server/global/cache"
-	"next-social/server/utils/response"
-
+	"next-social/server/repository"
 	"github.com/gin-gonic/gin"
 )
 
-func Login(c *gin.Context) {
+func Login(c *gin.Context) error{
 	var loginAccount dto.LoginAccount
 
 	if err := c.Bind(&loginAccount); err != nil {
-		//return err
-		response.ShowValidatorError(c, err)
-		return
+		return err
 	}
 
 	// 存储登录失败次数信息
@@ -25,10 +22,9 @@ func Login(c *gin.Context) {
 	}
 	count := v.(int)
 	if count >= 5 {
-		response.ShowError(c, "登录失败次数过多，请等待5分钟后再试")
-		//return Fail(c, -1, )
+		return return Fail(c, -1, "登录失败次数过多，请等待5分钟后再试")
 	}
 
-	response.ShowSuccess(c, "登录成功")
+	user, err := repository.UserRepository.FindByUsername(context.TODO(), loginAccount.Username)
 
 }
