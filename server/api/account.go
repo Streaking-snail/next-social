@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"next-social/server/common/maps"
 	"next-social/server/common/nt"
 	"next-social/server/dto"
 	"next-social/server/global/cache"
@@ -31,7 +32,6 @@ func Login(c *gin.Context) {
 		ShowError(c, err)
 		return
 	}
-
 	// 存储登录失败次数信息
 	loginFailCountKey := c.ClientIP() + loginAccount.Username
 	v, ok := cache.LoginFailedKeyManager.Get(loginFailCountKey)
@@ -126,7 +126,7 @@ func Login(c *gin.Context) {
 		//Menus:      menus,
 	}
 
-	Success(c, map[string]interface{}{
+	Success(c, maps.Map{
 		"info":  info,
 		"token": token,
 	})

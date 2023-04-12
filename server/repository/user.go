@@ -98,64 +98,6 @@ func (r userRepository) FindByUsername(c context.Context, username string) (o mo
 	return
 }
 
-func (r userRepository) ExistByUsername(c context.Context, username string) (exist bool, err error) {
-	user := model.User{}
-	var count uint64
-	err = r.GetDB(c).Table(user.TableName()).Select("count(*)").
-		Where("username = ?", username).
-		Find(&count).
-		Error
-	if err != nil {
-		return false, err
-	}
-	return count > 0, nil
-}
-
-func (r userRepository) ExistById(c context.Context, id string) (exist bool, err error) {
-	user := model.User{}
-	var count uint64
-	err = r.GetDB(c).Table(user.TableName()).Select("count(*)").
-		Where("id = ?", id).
-		Find(&count).
-		Error
-	if err != nil {
-		return false, err
-	}
-	return count > 0, nil
-}
-
-func (r userRepository) FindOnlineUsers(c context.Context) (o []model.User, err error) {
-	err = r.GetDB(c).Where("online = ?", true).Find(&o).Error
-	return
-}
-
-func (r userRepository) Create(c context.Context, o *model.User) error {
-	return r.GetDB(c).Create(o).Error
-}
-
 func (r userRepository) Update(c context.Context, o *model.User) error {
 	return r.GetDB(c).Updates(o).Error
-}
-
-func (r userRepository) UpdateOnlineByUsername(c context.Context, username string, online bool) error {
-	sql := "update users set online = ? where username = ?"
-	return r.GetDB(c).Exec(sql, online, username).Error
-}
-
-func (r userRepository) DeleteById(c context.Context, id string) error {
-	return r.GetDB(c).Where("id = ?", id).Delete(&model.User{}).Error
-}
-
-func (r userRepository) DeleteBySource(c context.Context, source string) error {
-	return r.GetDB(c).Where("source = ?", source).Delete(&model.User{}).Error
-}
-
-func (r userRepository) CountOnlineUser(c context.Context) (total int64, err error) {
-	err = r.GetDB(c).Where("online = ?", true).Find(&model.User{}).Count(&total).Error
-	return
-}
-
-func (r userRepository) Count(c context.Context) (total int64, err error) {
-	err = r.GetDB(c).Find(&model.User{}).Count(&total).Error
-	return
 }
