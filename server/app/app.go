@@ -11,15 +11,13 @@ func Run() {
 	//r := gin.Default()
 	r := gin.New()
 
+	UserApi := new(api.UserApi)
+
 	r.POST("/login", api.Login)
 
 	users := r.Group("/users")
 	{
-		users.POST("", func(c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message": "pong",
-			})
-		})
+		users.POST("", UserApi.CreateEndpoint)
 		// users.GET("", UserApi.AllEndpoint)
 		// users.GET("/paging", UserApi.PagingEndpoint)
 		// users.POST("", UserApi.CreateEndpoint)

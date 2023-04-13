@@ -101,3 +101,20 @@ func (r userRepository) FindByUsername(c context.Context, username string) (o mo
 func (r userRepository) Update(c context.Context, o *model.User) error {
 	return r.GetDB(c).Updates(o).Error
 }
+
+func (r userRepository) ExistByUsername(c context.Context, username string) (exist bool, err error) {
+	user := model.User{}
+	var count uint64
+	err = r.GetDB(c).Table(user.TableName()).Select("count(*)").
+		Where("username = ?", username).
+		Find(&count).
+		Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
+func (r userRepository) Create(c context.Context, o *model.User) error {
+	return r.GetDB(c).Create(o).Error
+}
