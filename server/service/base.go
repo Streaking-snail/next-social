@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"next-social/server/common/nt"
 	"next-social/server/env"
 
@@ -21,6 +22,7 @@ func (service baseService) inTransaction(ctx context.Context) bool {
 }
 
 func (service baseService) Transaction(ctx context.Context, f func(ctx context.Context) error) error {
+	fmt.Println("aaaaa")
 	if !service.inTransaction(ctx) {
 		return env.GetDB().Transaction(func(tx *gorm.DB) error {
 			ctx := service.Context(tx)

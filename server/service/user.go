@@ -6,6 +6,7 @@ import (
 	"next-social/server/common"
 	"next-social/server/common/nt"
 	"next-social/server/env"
+	"next-social/server/global/cache"
 	"next-social/server/model"
 	"next-social/server/repository"
 	"next-social/server/utils"
@@ -81,4 +82,70 @@ func (service userService) saveUserRoles(c context.Context, user model.User) err
 		}
 	}
 	return nil
+}
+
+func (service userService) DeleteUserById(userId string) error {
+	user, err := repository.UserRepository.FindById(context.TODO(), userId)
+	if err != nil {
+		return err
+	}
+	username := user.Username
+	// 下线该用户
+	loginTokens, err := service.GetUserLoginToken(context.TODO(), username)
+	if err != nil {
+		return err
+	}
+
+	err = env.GetDB().Transaction(func(tx *gorm.DB) error {
+		c := service.Context(tx)
+		// 删除用户与用户组的关系
+		// if err := repository.UserGroupMemberRepository.DeleteByUserId(c, userId); err != nil {
+		// 	return err
+		// }
+		// 删除用户与资产的关系
+		// if err := repository.AuthorisedRepository.DeleteByUserId(c, userId); err != nil {
+		// 	return err
+		// }
+		// 删除用户的默认磁盘空间
+		// if err := StorageService.DeleteStorageById(c, userId, true); err != nil {
+		// 	return err
+		// }
+		// 删除用户与角色的关系
+		if err := repository.UserRoleRefRepository.DeleteByUserId(c, user.ID); err != nil {
+			return err
+		}
+		// 删除用户
+		if err := repository.UserRepository.DeleteById(c, userId); err != nil {
+			return err
+		}
+		return nil
+	})
+
+	if err != nil {
+		return err
+	}
+
+	for _, token := range loginTokens {
+		service.Logout(token)
+	}
+	return nil
+}
+
+func (service userService) Logout(token string) {
+	cache.TokenManager.Delete(token)
+}
+
+func (service userService) GetUserLoginToken(c context.Context, username string) ([]string, error) {
+
+	loginLogs, err := repository.LoginLogRepository.FindAliveLoginLogsByUsername(c, username)
+	if err != nil {
+		return nil, err
+	}
+
+	var tokens []string
+	for j := range loginLogs {
+		token := loginLogs[j].ID
+		tokens = append(tokens, token)
+	}
+	return tokens, nil
 }

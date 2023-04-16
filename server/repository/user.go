@@ -102,6 +102,10 @@ func (r userRepository) Update(c context.Context, o *model.User) error {
 	return r.GetDB(c).Updates(o).Error
 }
 
+func (r userRepository) DeleteById(c context.Context, id string) error {
+	return r.GetDB(c).Where("id = ?", id).Delete(&model.User{}).Error
+}
+
 func (r userRepository) ExistByUsername(c context.Context, username string) (exist bool, err error) {
 	user := model.User{}
 	var count uint64

@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"net/http"
 	"next-social/server/common/nt"
 	"next-social/server/dto"
@@ -35,6 +36,7 @@ func FailWithData(c *gin.Context, code int, message string, data interface{}) {
 }
 
 func ShowError(c *gin.Context, msg interface{}) {
+	msg = fmt.Sprintf("%v", msg)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 400,
 		"msg":  msg,
