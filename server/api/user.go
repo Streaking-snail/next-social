@@ -20,7 +20,12 @@ func (u UserApi) CreateEndpoint(c *gin.Context) {
 		ShowError(c, err)
 		return
 	}
-
+	if item.Type == "" {
+		item.Type = "user"
+	}
+	if item.Nickname == "" {
+		item.Nickname = item.Username
+	}
 	if err := service.UserService.CreateUser(item); err != nil {
 		ShowError(c, err)
 		return

@@ -50,9 +50,9 @@ func (service userService) CreateUser(user model.User) (err error) {
 		if err := repository.UserRepository.Create(c, &user); err != nil {
 			return err
 		}
-		if err := service.saveUserRoles(c, user); err != nil {
-			return err
-		}
+		// if err := service.saveUserRoles(c, user); err != nil {
+		// 	return err
+		// }
 		// if err := StorageService.CreateStorageByUser(c, &user); err != nil {
 		// 	return err
 		// }
@@ -70,19 +70,19 @@ func (service userService) CreateUser(user model.User) (err error) {
 	})
 }
 
-func (service userService) saveUserRoles(c context.Context, user model.User) error {
-	for _, role := range user.Roles {
-		ref := &model.UserRoleRef{
-			ID:     utils.UUID(),
-			UserId: user.ID,
-			RoleId: role,
-		}
-		if err := repository.UserRoleRefRepository.Create(c, ref); err != nil {
-			return err
-		}
-	}
-	return nil
-}
+// func (service userService) saveUserRoles(c context.Context, user model.User) error {
+// 	for _, role := range user.Roles {
+// 		ref := &model.UserRoleRef{
+// 			ID:     utils.UUID(),
+// 			UserId: user.ID,
+// 			RoleId: role,
+// 		}
+// 		if err := repository.UserRoleRefRepository.Create(c, ref); err != nil {
+// 			return err
+// 		}
+// 	}
+// 	return nil
+// }
 
 func (service userService) DeleteUserById(userId string) error {
 	user, err := repository.UserRepository.FindById(context.TODO(), userId)
@@ -104,9 +104,9 @@ func (service userService) DeleteUserById(userId string) error {
 		// 	return err
 		// }
 		// 删除用户与角色的关系
-		if err := repository.UserRoleRefRepository.DeleteByUserId(c, user.ID); err != nil {
-			return err
-		}
+		// if err := repository.UserRoleRefRepository.DeleteByUserId(c, user.ID); err != nil {
+		// 	return err
+		// }
 		// 删除用户
 		if err := repository.UserRepository.DeleteById(c, userId); err != nil {
 			return err

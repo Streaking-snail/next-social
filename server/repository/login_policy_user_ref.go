@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-
 	"next-social/server/model"
 )
 
@@ -15,10 +14,10 @@ type loginPolicyUserRefRepository struct {
 	baseRepository
 }
 
-func (r loginPolicyUserRefRepository) FindByUserId(c context.Context, userId string) (items []model.LoginPolicyUserRef, err error) {
-	err = r.GetDB(c).Where("user_id = ?", userId).Find(&items).Error
-	return
-}
+// func (r loginPolicyUserRefRepository) FindByUserId(c context.Context, userId string) (items []model.LoginPolicyUserRef, err error) {
+// 	err = r.GetDB(c).Where("user_id = ?", userId).Find(&items).Error
+// 	return
+// }
 
 type timePeriodRepository struct {
 	baseRepository
