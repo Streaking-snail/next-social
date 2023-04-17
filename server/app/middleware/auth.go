@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var anonymousUrls = []string{"/login"}
+var anonymousUrls = []string{"/login", "/users"}
 
 func Auth(c *gin.Context) {
 	uri := c.Request.RequestURI

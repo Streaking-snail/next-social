@@ -51,7 +51,7 @@ func setupDB() *gorm.DB {
 	// 	&model.StorageLog{}, &model.Authorised{}); err != nil {
 	// 	panic(fmt.Errorf("初始化数据库表结构异常: %v", err.Error()))
 	// }
-	if err := db.AutoMigrate(&model.User{}, &model.LoginPolicy{}, &model.LoginPolicyUserRef{}); err != nil {
+	if err := db.AutoMigrate(&model.User{}, &model.LoginPolicy{}, &model.LoginPolicyUserRef{}, &model.LoginLog{}); err != nil {
 		panic(fmt.Errorf("初始化数据库表结构异常: %v", err.Error()))
 	}
 	return db

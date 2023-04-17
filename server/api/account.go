@@ -49,9 +49,10 @@ func Login(c *gin.Context) {
 		count++
 		cache.LoginFailedKeyManager.Set(loginFailCountKey, count, cache.LoginLockExpiration)
 		// 保存登录日志
-		// if err := service.UserService.SaveLoginLog(c.ClientIP(), c.Request().UserAgent(), loginAccount.Username, false, loginAccount.Remember, "", "账号或密码不正确"); err != nil {
-		// 	return err
-		// }
+		if err := service.UserService.SaveLoginLog(c.ClientIP(), c.Request.UserAgent(), loginAccount.Username, false, loginAccount.Remember, "", "账号或密码不正确"); err != nil {
+			ShowError(c, err)
+			return
+		}
 		FailWithData(c, -1, "您输入的账号或密码不正确", count)
 		return
 	}
@@ -65,9 +66,10 @@ func Login(c *gin.Context) {
 		count++
 		cache.LoginFailedKeyManager.Set(loginFailCountKey, count, cache.LoginLockExpiration)
 		// 保存登录日志
-		// if err := service.UserService.SaveLoginLog(c.ClientIP(), c.Request().UserAgent(), loginAccount.Username, false, loginAccount.Remember, "", "账号或密码不正确"); err != nil {
-		// 	return err
-		// }
+		if err := service.UserService.SaveLoginLog(c.ClientIP(), c.Request.UserAgent(), loginAccount.Username, false, loginAccount.Remember, "", "账号或密码不正确"); err != nil {
+			ShowError(c, err)
+			return
+		}
 		FailWithData(c, -1, "您输入的账号或密码不正确", count)
 		return
 	}
@@ -97,10 +99,10 @@ func Login(c *gin.Context) {
 		return
 	}
 	// 保存登录日志
-	// if err := service.UserService.SaveLoginLog(c.ClientIP(), c.Request().UserAgent(), loginAccount.Username, true, loginAccount.Remember, token, ""); err != nil {
-	// 	ShowError(c, err)
-	// 	return
-	// }
+	if err := service.UserService.SaveLoginLog(c.ClientIP(), c.Request.UserAgent(), loginAccount.Username, true, loginAccount.Remember, token, ""); err != nil {
+		ShowError(c, err)
+		return
+	}
 
 	// var menus []string
 	// if service.UserService.IsSuperAdmin(user.ID) {

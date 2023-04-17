@@ -16,13 +16,13 @@ func Run() {
 	UserApi := new(api.UserApi)
 
 	r.POST("/login", api.Login)
+	r.POST("/users", UserApi.CreateEndpoint)
 
 	users := r.Group("/users", mw.Admin)
 	{
-		users.POST("", UserApi.CreateEndpoint)
 		users.DELETE("/:id", UserApi.DeleteEndpoint)
-		// users.GET("", UserApi.AllEndpoint)
-		// users.GET("/paging", UserApi.PagingEndpoint)
+		users.GET("", UserApi.AllEndpoint)
+		users.GET("/paging", UserApi.PagingEndpoint)
 		// users.POST("", UserApi.CreateEndpoint)
 		// users.PUT("/:id", UserApi.UpdateEndpoint)
 		// users.PATCH("/:id/status", UserApi.UpdateStatusEndpoint)

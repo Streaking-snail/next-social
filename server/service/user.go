@@ -98,14 +98,7 @@ func (service userService) DeleteUserById(userId string) error {
 
 	err = env.GetDB().Transaction(func(tx *gorm.DB) error {
 		c := service.Context(tx)
-		// 删除用户与用户组的关系
-		// if err := repository.UserGroupMemberRepository.DeleteByUserId(c, userId); err != nil {
-		// 	return err
-		// }
-		// 删除用户与资产的关系
-		// if err := repository.AuthorisedRepository.DeleteByUserId(c, userId); err != nil {
-		// 	return err
-		// }
+
 		// 删除用户的默认磁盘空间
 		// if err := StorageService.DeleteStorageById(c, userId, true); err != nil {
 		// 	return err
@@ -148,4 +141,26 @@ func (service userService) GetUserLoginToken(c context.Context, username string)
 		tokens = append(tokens, token)
 	}
 	return tokens, nil
+}
+
+func (servoce userService) SaveLoginLog(clientIP, clientUserAgent string, username string, success, remember bool, id, reason string) error {
+	loginLog := model.LoginLog{
+		Username:        username,
+		ClientIP:        clientIP,
+		ClientUserAgent: clientUserAgent,
+		LoginTime:       common.NowJsonTime(),
+		Reason:          reason,
+		Remember:        remember,
+	}
+	if success {
+		loginLog.State = "1"
+		loginLog.ID = id
+	} else {
+		loginLog.State = "0"
+		loginLog.ID = utils.LongUUID()
+	}
+	if err := repository.LoginLogRepository.Create(context.TODO(), &loginLog); err != nil {
+		return err
+	}
+	return nil
 }
