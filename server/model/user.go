@@ -16,7 +16,6 @@ type User struct {
 	Type       string          `gorm:"type:varchar(20)" json:"type"`
 	Mail       string          `gorm:"type:varchar(500)" json:"mail"`
 	Source     string          `gorm:"type:varchar(20)" json:"source"`
-	Roles      []string        `gorm:"-" json:"roles"`
 }
 
 type UserForPage struct {

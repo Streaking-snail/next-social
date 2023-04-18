@@ -15,13 +15,13 @@ import (
 )
 
 type AccountInfo struct {
-	Id         string   `json:"id"`
-	Username   string   `json:"username"`
-	Nickname   string   `json:"nickname"`
-	Type       string   `json:"type"`
-	EnableTotp bool     `json:"enableTotp"`
-	Roles      []string `json:"roles"`
-	Menus      []string `json:"menus"`
+	Id         string `json:"id"`
+	Username   string `json:"username"`
+	Nickname   string `json:"nickname"`
+	Type       string `json:"type"`
+	EnableTotp bool   `json:"enableTotp"`
+	//Roles      []string `json:"roles"`
+	Menus []string `json:"menus"`
 }
 
 func Login(c *gin.Context) {
@@ -124,7 +124,7 @@ func Login(c *gin.Context) {
 		Nickname:   user.Nickname,
 		Type:       user.Type,
 		EnableTotp: user.TOTPSecret != "" && user.TOTPSecret != "-",
-		Roles:      user.Roles,
+		//Roles:      user.Roles,
 		//Menus:      menus,
 	}
 

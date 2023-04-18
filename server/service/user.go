@@ -50,12 +50,6 @@ func (service userService) CreateUser(user model.User) (err error) {
 		if err := repository.UserRepository.Create(c, &user); err != nil {
 			return err
 		}
-		// if err := service.saveUserRoles(c, user); err != nil {
-		// 	return err
-		// }
-		// if err := StorageService.CreateStorageByUser(c, &user); err != nil {
-		// 	return err
-		// }
 
 		// 		if user.Mail != "" {
 		// 			subject := fmt.Sprintf("%s 注册通知", branding.Name)
@@ -99,14 +93,6 @@ func (service userService) DeleteUserById(userId string) error {
 	err = env.GetDB().Transaction(func(tx *gorm.DB) error {
 		c := service.Context(tx)
 
-		// 删除用户的默认磁盘空间
-		// if err := StorageService.DeleteStorageById(c, userId, true); err != nil {
-		// 	return err
-		// }
-		// 删除用户与角色的关系
-		// if err := repository.UserRoleRefRepository.DeleteByUserId(c, user.ID); err != nil {
-		// 	return err
-		// }
 		// 删除用户
 		if err := repository.UserRepository.DeleteById(c, userId); err != nil {
 			return err
@@ -129,7 +115,6 @@ func (service userService) Logout(token string) {
 }
 
 func (service userService) GetUserLoginToken(c context.Context, username string) ([]string, error) {
-
 	loginLogs, err := repository.LoginLogRepository.FindAliveLoginLogsByUsername(c, username)
 	if err != nil {
 		return nil, err
@@ -143,7 +128,7 @@ func (service userService) GetUserLoginToken(c context.Context, username string)
 	return tokens, nil
 }
 
-func (servoce userService) SaveLoginLog(clientIP, clientUserAgent string, username string, success, remember bool, id, reason string) error {
+func (service userService) SaveLoginLog(clientIP, clientUserAgent string, username string, success, remember bool, id, reason string) error {
 	loginLog := model.LoginLog{
 		Username:        username,
 		ClientIP:        clientIP,
@@ -163,4 +148,28 @@ func (servoce userService) SaveLoginLog(clientIP, clientUserAgent string, userna
 		return err
 	}
 	return nil
+}
+
+func (service userService) UpdateUser(userId string, user model.User) error {
+	//ctx := service.Context(tx)
+	ctx := context.TODO()
+	dbUser, err := repository.UserRepository.FindById(ctx, userId)
+	if err != nil {
+		return err
+	}
+	if dbUser.Username != user.Username {
+		exist, err := repository.UserRepository.ExistByUsername(ctx, user.Username)
+		if err != nil {
+			return err
+		}
+		if exist {
+			return fmt.Errorf("username %s is already used", user.Username)
+		}
+	}
+
+	// 移除用户角色的缓存
+	cache.UserRolesManager.Delete(userId)
+
+	return repository.UserRepository.Update(ctx, &user)
+
 }

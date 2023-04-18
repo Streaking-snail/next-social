@@ -20,9 +20,11 @@ func (u UserApi) CreateEndpoint(c *gin.Context) {
 		ShowError(c, err)
 		return
 	}
+	//用户类型默认为普通用户
 	if item.Type == "" {
 		item.Type = "user"
 	}
+	//昵称默认为用户名
 	if item.Nickname == "" {
 		item.Nickname = item.Username
 	}
@@ -76,7 +78,7 @@ func (u UserApi) AllEndpoint(c *gin.Context) {
 	return
 }
 
-func (userApi UserApi) DeleteEndpoint(c *gin.Context) {
+func (u UserApi) DeleteEndpoint(c *gin.Context) {
 	ids := c.Param("id")
 	account, found := GetCurrentAccount(c)
 	if !found {
@@ -96,6 +98,23 @@ func (userApi UserApi) DeleteEndpoint(c *gin.Context) {
 		}
 	}
 
+	Success(c, nil)
+	return
+}
+
+func (u UserApi) UpdateEndpoint(c *gin.Context) {
+	id := c.Param("id")
+
+	var item model.User
+	if err := c.Bind(&item); err != nil {
+		ShowError(c, err)
+		return
+	}
+
+	if err := service.UserService.UpdateUser(id, item); err != nil {
+		ShowError(c, err)
+		return
+	}
 	Success(c, nil)
 	return
 }
