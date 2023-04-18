@@ -137,9 +137,9 @@ func Login(c *gin.Context) {
 
 func LoginSuccess(loginAccount dto.LoginAccount, user model.User, ip string) (string, error) {
 	// 判断当前时间是否允许该用户登录
-	if err := service.LoginPolicyService.Check(user.ID, ip); err != nil {
-		return "", err
-	}
+	// if err := service.LoginPolicyService.Check(user.ID, ip); err != nil {
+	// 	return "", err
+	// }
 
 	token := utils.LongUUID()
 

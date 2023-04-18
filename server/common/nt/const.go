@@ -19,13 +19,10 @@ const (
 	Custom     = "custom"      // 密码
 	PrivateKey = "private-key" // 密钥
 
-	JobStatusRunning        = "running"                // 计划任务运行状态
-	JobStatusNotRunning     = "not-running"            // 计划任务未运行状态
-	FuncCheckAssetStatusJob = "check-asset-status-job" // 检测资产是否在线
-	FuncShellJob            = "shell-job"              // 执行Shell脚本
-	JobModeSelf             = "self"                   // 本机
-	JobModeAll              = "all"                    // 全部资产
-	JobModeCustom           = "custom"                 // 自定义选择资产
+	JobStatusRunning    = "running"     // 计划任务运行状态
+	JobStatusNotRunning = "not-running" // 计划任务未运行状态
+	FuncShellJob        = "shell-job"   // 执行Shell脚本
+	JobModeSelf         = "self"        // 本机
 
 	SshMode      = "ssh-mode"      // ssh模式
 	MailHost     = "mail-host"     // 邮件服务器地址
@@ -33,19 +30,8 @@ const (
 	MailUsername = "mail-username" // 邮件服务账号
 	MailPassword = "mail-password" // 邮件服务密码
 
-	NoConnect    = "no_connect"   // 会话状态：未连接
-	Connecting   = "connecting"   // 会话状态：连接中
-	Connected    = "connected"    // 会话状态：已连接
-	Disconnected = "disconnected" // 会话状态：已断开连接
-
-	Guacd    = "guacd"    // 接入模式：guacd
-	Native   = "native"   // 接入模式：原生
-	Terminal = "terminal" // 接入模式：终端
-
 	TypeUser  = "user"  // 普通用户
 	TypeAdmin = "admin" // 管理员
-
-	SourceLdap = "ldap" // 从LDAP同步的用户
 
 	StatusEnabled  = "enabled"
 	StatusDisabled = "disabled"
