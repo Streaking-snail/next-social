@@ -20,12 +20,13 @@ func Run() {
 
 	users := r.Group("/users", mw.Admin)
 	{
-		users.DELETE("/:id", UserApi.DeleteEndpoint)
-		users.GET("", UserApi.AllEndpoint)
-		users.GET("/paging", UserApi.PagingEndpoint)
-		users.PUT("/:id", UserApi.UpdateEndpoint)
-		users.PATCH("/:id/status", UserApi.UpdateStatusEndpoint)
-		users.POST("/:id/change-password", UserApi.ChangePasswordEndpoint)
+		users.DELETE("/:id", UserApi.DeleteEndpoint)                       //删除用户
+		users.GET("", UserApi.AllEndpoint)                                 //获取所有用户
+		users.GET("/paging", UserApi.PagingEndpoint)                       //分页查询用户
+		users.PUT("/:id", UserApi.UpdateEndpoint)                          //编辑用户
+		users.PATCH("/:id/status", UserApi.UpdateStatusEndpoint)           //修改用户状态
+		users.POST("/:id/change-password", UserApi.ChangePasswordEndpoint) //修改用户密码
+		users.GET("/:id", UserApi.DetailsEndpoint)                         //用户详情
 
 	}
 

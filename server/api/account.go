@@ -101,7 +101,6 @@ func Login(c *gin.Context) {
 	// 保存登录日志
 	if err := service.UserService.SaveLoginLog(c.ClientIP(), c.Request.UserAgent(), loginAccount.Username, true, loginAccount.Remember, token, ""); err != nil {
 		ShowError(c, err)
-		return
 	}
 
 	// var menus []string

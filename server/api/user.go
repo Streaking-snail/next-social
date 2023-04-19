@@ -119,7 +119,7 @@ func (u UserApi) UpdateStatusEndpoint(c *gin.Context) {
 	status := c.Query("status")
 	account, _ := GetCurrentAccount(c)
 
-	if account.Type != "admin" || service.UserService.IsSuperAdmin(id) {
+	if account.Type != "admin" || id != account.ID || service.UserService.IsSuperAdmin(id) {
 		Fail(c, -1, "不能修改超级管理员状态或权限不足")
 		return
 	}
@@ -140,7 +140,7 @@ func (u UserApi) ChangePasswordEndpoint(c *gin.Context) {
 		Fail(c, -1, "密码不能为空")
 		return
 	}
-	if account.Type != "admin" || id != account.ID || service.UserService.IsSuperAdmin(id) {
+	if account.Type != "admin" || id != account.ID || (service.UserService.IsSuperAdmin(id) && service.UserService.IsSuperAdmin(account.ID)) {
 		Fail(c, -1, "不能修改超级管理员密码或权限不足")
 		return
 	}
@@ -149,4 +149,19 @@ func (u UserApi) ChangePasswordEndpoint(c *gin.Context) {
 		ShowError(c, err)
 		return
 	}
+}
+
+func (u UserApi) DetailsEndpoint(c *gin.Context) {
+	id := c.Param("id")
+	account, _ := GetCurrentAccount(c)
+	if account.Type != "admin" || id != account.ID || (service.UserService.IsSuperAdmin(id) && service.UserService.IsSuperAdmin(account.ID)) {
+		Fail(c, -1, "权限不足")
+		return
+	}
+	user, err := repository.UserRepository.FindById(context.Background(), id)
+	if err != nil {
+		ShowError(c, err)
+		return
+	}
+	Success(c, user)
 }
