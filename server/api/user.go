@@ -34,7 +34,6 @@ func (u UserApi) CreateEndpoint(c *gin.Context) {
 	}
 
 	Success(c, item)
-	return
 }
 
 func (u UserApi) PagingEndpoint(c *gin.Context) {
@@ -58,7 +57,6 @@ func (u UserApi) PagingEndpoint(c *gin.Context) {
 		"total": total,
 		"items": items,
 	})
-	return
 }
 
 func (u UserApi) AllEndpoint(c *gin.Context) {
@@ -75,7 +73,6 @@ func (u UserApi) AllEndpoint(c *gin.Context) {
 		}
 	}
 	Success(c, items)
-	return
 }
 
 func (u UserApi) DeleteEndpoint(c *gin.Context) {
@@ -99,7 +96,6 @@ func (u UserApi) DeleteEndpoint(c *gin.Context) {
 	}
 
 	Success(c, nil)
-	return
 }
 
 func (u UserApi) UpdateEndpoint(c *gin.Context) {
@@ -116,5 +112,4 @@ func (u UserApi) UpdateEndpoint(c *gin.Context) {
 		return
 	}
 	Success(c, nil)
-	return
 }
