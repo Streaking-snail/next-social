@@ -64,20 +64,6 @@ func (service userService) CreateUser(user model.User) (err error) {
 	})
 }
 
-// func (service userService) saveUserRoles(c context.Context, user model.User) error {
-// 	for _, role := range user.Roles {
-// 		ref := &model.UserRoleRef{
-// 			ID:     utils.UUID(),
-// 			UserId: user.ID,
-// 			RoleId: role,
-// 		}
-// 		if err := repository.UserRoleRefRepository.Create(c, ref); err != nil {
-// 			return err
-// 		}
-// 	}
-// 	return nil
-// }
-
 func (service userService) DeleteUserById(userId string) error {
 	user, err := repository.UserRepository.FindById(context.TODO(), userId)
 	if err != nil {
@@ -172,4 +158,55 @@ func (service userService) UpdateUser(userId string, user model.User) error {
 
 	return repository.UserRepository.Update(ctx, &user)
 
+}
+
+func (service userService) UpdateStatusById(userId string, status string) error {
+	if nt.StatusDisabled == status {
+		//下线用户
+		if err := service.LogoutById(context.TODO(), userId); err != nil {
+			return err
+		}
+	}
+	u := model.User{
+		ID:     userId,
+		Status: status,
+	}
+	return repository.UserRepository.Update(context.TODO(), &u)
+}
+
+func (service userService) LogoutById(c context.Context, id string) error {
+	user, err := repository.UserRepository.FindById(c, id)
+	if err != nil {
+		return err
+	}
+
+	username := user.Username
+	loginLogs, err := repository.LoginLogRepository.FindAliveLoginLogsByUsername(c, username)
+	if err != nil {
+		return err
+	}
+
+	for j := range loginLogs {
+		token := loginLogs[j].ID
+		service.Logout(token)
+	}
+	return nil
+}
+
+func (service userService) ChangePassword(userId string, password string) error {
+	passwd, err := utils.Encoder.Encode([]byte(password))
+	if err != nil {
+		return err
+	}
+
+	u := &model.User{
+		Password: string(passwd),
+		ID:       userId,
+	}
+	ctx := context.Background()
+	if err := repository.UserRepository.Update(ctx, u); err != nil {
+		return err
+	}
+
+	return nil
 }

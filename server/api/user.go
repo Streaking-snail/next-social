@@ -113,3 +113,40 @@ func (u UserApi) UpdateEndpoint(c *gin.Context) {
 	}
 	Success(c, nil)
 }
+
+func (u UserApi) UpdateStatusEndpoint(c *gin.Context) {
+	id := c.Param("id")
+	status := c.Query("status")
+	account, _ := GetCurrentAccount(c)
+
+	if account.Type != "admin" || service.UserService.IsSuperAdmin(id) {
+		Fail(c, -1, "不能修改超级管理员状态或权限不足")
+		return
+	}
+
+	if err := service.UserService.UpdateStatusById(id, status); err != nil {
+		ShowError(c, err)
+		return
+	}
+	Success(c, nil)
+}
+
+func (u UserApi) ChangePasswordEndpoint(c *gin.Context) {
+	id := c.Param("id")
+	password := c.PostForm("password")
+	account, _ := GetCurrentAccount(c)
+
+	if password == "" {
+		Fail(c, -1, "密码不能为空")
+		return
+	}
+	if account.Type != "admin" || id != account.ID || service.UserService.IsSuperAdmin(id) {
+		Fail(c, -1, "不能修改超级管理员密码或权限不足")
+		return
+	}
+
+	if err := service.UserService.ChangePassword(id, password); err != nil {
+		ShowError(c, err)
+		return
+	}
+}

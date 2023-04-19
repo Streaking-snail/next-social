@@ -24,10 +24,9 @@ func Run() {
 		users.GET("", UserApi.AllEndpoint)
 		users.GET("/paging", UserApi.PagingEndpoint)
 		users.PUT("/:id", UserApi.UpdateEndpoint)
-		// users.PATCH("/:id/status", UserApi.UpdateStatusEndpoint)
-		// users.GET("/:id", UserApi.GetEndpoint)
-		// users.POST("/:id/change-password", UserApi.ChangePasswordEndpoint)
-		// users.POST("/:id/reset-totp", UserApi.ResetTotpEndpoint)
+		users.PATCH("/:id/status", UserApi.UpdateStatusEndpoint)
+		users.POST("/:id/change-password", UserApi.ChangePasswordEndpoint)
+
 	}
 
 	r.GET("/pong", func(c *gin.Context) {
@@ -37,8 +36,4 @@ func Run() {
 	})
 
 	r.Run(":8282")
-}
-
-func Admin() {
-
 }
