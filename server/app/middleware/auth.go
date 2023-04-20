@@ -53,19 +53,18 @@ func Auth(c *gin.Context) {
 
 func Admin(c *gin.Context) {
 
-	account, found := api.GetCurrentAccount(c)
+	//account, found := api.GetCurrentAccount(c)
+	_, found := api.GetCurrentAccount(c)
 	if !found {
 		c.Abort()
 		api.Fail(c, 401, "您的登录信息已失效，请重新登录后再试。")
 		return
 	}
 
-	if account.Type != nt.TypeAdmin {
-		c.Abort()
-		api.Fail(c, 403, "permission denied.")
-		return
-	}
-
+	// if account.Type != nt.TypeAdmin {
+	// 	c.Abort()
+	// 	api.Fail(c, 403, "permission denied.")
+	// 	return
+	// }
 	c.Next()
-	return
 }
