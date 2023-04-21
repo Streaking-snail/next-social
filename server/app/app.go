@@ -34,7 +34,7 @@ func Run() {
 
 	frid := r.Group("/frid")
 	{
-		frid.GET("", FridApi.AllFridEndpoint)
+		frid.GET("", FridApi.AllFridEndpoint) //好友列表
 	}
 
 	r.GET("/pong", func(c *gin.Context) {
