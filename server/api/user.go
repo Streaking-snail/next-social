@@ -47,7 +47,7 @@ func (u UserApi) PagingEndpoint(c *gin.Context) {
 	field := c.Query("field")
 	online := c.Query("online")
 
-	items, total, err := repository.UserRepository.Find(context.TODO(), pageIndex, pageSize, username, nickname, mail, online, "", order, field)
+	items, total, err := repository.UserRepository.Find(context.TODO(), pageIndex, pageSize, username, nickname, mail, online, order, field)
 	if err != nil {
 		ShowError(c, err)
 		return

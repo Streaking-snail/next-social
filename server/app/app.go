@@ -14,11 +14,13 @@ func Run() {
 	r.Use(mw.Auth)
 
 	UserApi := new(api.UserApi)
+	FridApi := new(api.FridApi)
 
 	r.POST("/login", api.Login)
 	r.POST("/users", UserApi.CreateEndpoint)
 
-	users := r.Group("/users", mw.Admin)
+	//users := r.Group("/users", mw.Admin)
+	users := r.Group("/users")
 	{
 		users.DELETE("/:id", UserApi.DeleteEndpoint)                       //删除用户
 		users.GET("", UserApi.AllEndpoint)                                 //获取所有用户
@@ -28,6 +30,11 @@ func Run() {
 		users.POST("/:id/change-password", UserApi.ChangePasswordEndpoint) //修改用户密码
 		users.GET("/:id", UserApi.DetailsEndpoint)                         //用户详情
 
+	}
+
+	frid := r.Group("/frid")
+	{
+		frid.GET("", FridApi.AllFridEndpoint)
 	}
 
 	r.GET("/pong", func(c *gin.Context) {

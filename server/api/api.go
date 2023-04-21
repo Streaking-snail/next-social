@@ -16,18 +16,9 @@ func Fail(c *gin.Context, code int, message string) {
 		"code":    code,
 		"message": message,
 	})
-	// return c.JSON(200, maps.Map{
-	// 	"code":    code,
-	// 	"message": message,
-	// })
 }
 
 func FailWithData(c *gin.Context, code int, message string, data interface{}) {
-	// return c.JSON(200, maps.Map{
-	// 	"code":    code,
-	// 	"message": message,
-	// 	"data":    data,
-	// })
 	c.JSON(http.StatusOK, gin.H{
 		"code":    code,
 		"message": message,
@@ -52,7 +43,6 @@ func Success(c *gin.Context, data interface{}) {
 }
 
 func GetToken(c *gin.Context) string {
-	//token := c.Request().Header.Get(nt.Token)
 	token := c.GetHeader(nt.Token)
 	if len(token) > 0 {
 		return token

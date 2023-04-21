@@ -15,20 +15,18 @@ import (
 )
 
 type AccountInfo struct {
-	Id         string `json:"id"`
-	Username   string `json:"username"`
-	Nickname   string `json:"nickname"`
-	Type       string `json:"type"`
-	EnableTotp bool   `json:"enableTotp"`
-	//Roles      []string `json:"roles"`
-	Menus []string `json:"menus"`
+	Id         string   `json:"id"`
+	Username   string   `json:"username"`
+	Nickname   string   `json:"nickname"`
+	Type       string   `json:"type"`
+	EnableTotp bool     `json:"enableTotp"`
+	Menus      []string `json:"menus"`
 }
 
 func Login(c *gin.Context) {
 	var loginAccount dto.LoginAccount
 
 	if err := c.Bind(&loginAccount); err != nil {
-		//return err
 		ShowError(c, err)
 		return
 	}
@@ -74,25 +72,6 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	// 账号密码正确，需要进行两步验证
-	// if user.TOTPSecret != "" && user.TOTPSecret != "-" {
-	// 	if loginAccount.TOTP == "" {
-	// 		Fail(c, 100, "")
-	// 		return
-	// 	} else {
-	// 		if !common.Validate(loginAccount.TOTP, user.TOTPSecret) {
-	// 			count++
-	// 			cache.LoginFailedKeyManager.Set(loginFailCountKey, count, cache.LoginLockExpiration)
-	// 			// 保存登录日志
-	// 			if err := service.UserService.SaveLoginLog(c.ClientIP(), c.Request().UserAgent(), loginAccount.Username, false, loginAccount.Remember, "", "双因素认证授权码不正确"); err != nil {
-	// 				return err
-	// 			}
-	// 			FailWithData(c, -1, "您输入双因素认证授权码不正确", count)
-	// 			return
-	// 		}
-	// 	}
-	// }
-
 	token, err := LoginSuccess(loginAccount, user, c.ClientIP())
 	if err != nil {
 		ShowError(c, err)
@@ -123,7 +102,6 @@ func Login(c *gin.Context) {
 		Nickname:   user.Nickname,
 		Type:       user.Type,
 		EnableTotp: user.TOTPSecret != "" && user.TOTPSecret != "-",
-		//Roles:      user.Roles,
 		//Menus:      menus,
 	}
 
@@ -131,14 +109,9 @@ func Login(c *gin.Context) {
 		"info":  info,
 		"token": token,
 	})
-	return
 }
 
 func LoginSuccess(loginAccount dto.LoginAccount, user model.User, ip string) (string, error) {
-	// 判断当前时间是否允许该用户登录
-	// if err := service.LoginPolicyService.Check(user.ID, ip); err != nil {
-	// 	return "", err
-	// }
 
 	token := utils.LongUUID()
 

@@ -18,17 +18,9 @@ func (r userRepository) FindAll(c context.Context) (o []model.User, err error) {
 	return
 }
 
-func (r userRepository) Find(c context.Context, pageIndex, pageSize int, username, nickname, mail, online, loginPolicyId, order, field string) (o []model.UserForPage, total int64, err error) {
+func (r userRepository) Find(c context.Context, pageIndex, pageSize int, username, nickname, mail, online, order, field string) (o []model.UserForPage, total int64, err error) {
 	db := r.GetDB(c).Table("users").Select("users.id,users.username,users.nickname,users.mail,users.online,users.created,users.type,users.status,users.source, users.totp_secret")
 	dbCounter := r.GetDB(c).Table("users")
-
-	if loginPolicyId != "" {
-		db = db.Joins("left join login_policies_ref as ref on users.id = ref.user_id")
-		dbCounter = dbCounter.Joins("left join login_policies_ref as ref on users.id = ref.user_id")
-
-		db = db.Where("ref.login_policy_id = ?", loginPolicyId)
-		dbCounter = dbCounter.Where("ref.login_policy_id = ?", loginPolicyId)
-	}
 
 	if len(username) > 0 {
 		db = db.Where("users.username like ?", "%"+username+"%")
