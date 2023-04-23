@@ -12,21 +12,16 @@ import (
 var GlobalCfg *Config
 
 type Config struct {
-	Debug     bool
-	Demo      bool
-	Container bool
-	DB        string
-	//Server             *Server
-	Mysql *Mysql
-	Redis *Redis
-	//Sqlite             *Sqlite
+	Debug              bool
+	Demo               bool
+	Container          bool
+	DB                 string
+	Mysql              *Mysql
+	Redis              *Redis
 	ResetPassword      string
-	ResetTotp          string
 	EncryptionKey      string
 	EncryptionPassword []byte
 	NewEncryptionKey   string
-	//Guacd              *Guacd
-	//Sshd               *Sshd
 }
 
 type Mysql struct {
@@ -54,8 +49,6 @@ func SetupConfig() (*Config, error) {
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	pflag.String("db", "mysql", "db mode")
-	//pflag.String("sqlite.file", path.Join("/usr/local/next-social/data", "sqlite", "next-social.db"), "sqlite db file")
-	//MySQL
 	pflag.String("mysql.hostname", "127.0.0.1", "mysql hostname")
 	pflag.Int("mysql.port", 3306, "mysql port")
 	pflag.String("mysql.username", "mysql", "mysql username")
@@ -82,11 +75,7 @@ func SetupConfig() (*Config, error) {
 			Password: viper.GetString("mysql.password"),
 			Database: viper.GetString("mysql.database"),
 		},
-		// Sqlite: &Sqlite{
-		// 	File: viper.GetString("sqlite.file"),
-		// },
 		ResetPassword:    viper.GetString("reset-password"),
-		ResetTotp:        viper.GetString("reset-totp"),
 		Debug:            viper.GetBool("debug"),
 		Demo:             viper.GetBool("demo"),
 		Container:        viper.GetBool("container"),
