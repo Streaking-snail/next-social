@@ -28,6 +28,10 @@ func (u UserApi) CreateEndpoint(c *gin.Context) {
 	if item.Nickname == "" {
 		item.Nickname = item.Username
 	}
+	//默认状态
+	if item.Status == "" {
+		item.Status = "enabled"
+	}
 	if err := service.UserService.CreateUser(item); err != nil {
 		ShowError(c, err)
 		return

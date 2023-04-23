@@ -26,6 +26,26 @@ func (r fridRepository) FindAll(c context.Context, id string) (o []model.User, e
 	return
 }
 
+// 好友申请
 func (r fridRepository) Create(c context.Context, o *model.UserApply) error {
+	return r.GetDB(c).Create(o).Error
+}
+
+func (r fridRepository) FindByStatus(c context.Context, o *model.UserApply) (exist bool, err error) {
+	//userapply := model.UserApply{}
+	var count int8
+	err = r.GetDB(c).Table(o.TableName()).Select("count(*)").Where(&o).Find(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count <= 0, nil
+}
+
+func (r fridRepository) Update(c context.Context, o *model.UserApply) (err error) {
+	return r.GetDB(c).Updates(o).Error
+}
+
+// 增加好友关系
+func (r fridRepository) HandApple(c context.Context, o *model.UserRelation) (err error) {
 	return r.GetDB(c).Create(o).Error
 }

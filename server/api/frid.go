@@ -4,6 +4,7 @@ import (
 	"context"
 	"next-social/server/repository"
 	"next-social/server/service"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -31,6 +32,7 @@ func (frid FridApi) ApplyEndpoint(c *gin.Context) {
 	friendId, err := repository.UserRepository.FindByUsername(context.TODO(), username)
 	if err != nil {
 		ShowError(c, err)
+		return
 	}
 	account, found := GetCurrentAccount(c)
 	if !found {
@@ -43,4 +45,24 @@ func (frid FridApi) ApplyEndpoint(c *gin.Context) {
 		return
 	}
 	Success(c, "好友申请已发送")
+}
+
+func (frid FridApi) HandeEndpoint(c *gin.Context) {
+	account, found := GetCurrentAccount(c)
+	if !found {
+		Fail(c, -1, "获取当前登录账户失败")
+		return
+	}
+	friendId := c.Param("id")
+	str_status := c.Query("status")
+	status, err := strconv.Atoi(str_status)
+	if err != nil {
+		ShowError(c, err)
+		return
+	}
+	if err := service.FridService.HandleApply(account.ID, friendId, status); err != nil {
+		ShowError(c, err)
+		return
+	}
+	Success(c, "处理完成")
 }
