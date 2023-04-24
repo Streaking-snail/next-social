@@ -66,3 +66,35 @@ func (frid FridApi) HandeEndpoint(c *gin.Context) {
 	}
 	Success(c, "处理完成")
 }
+
+func (frid FridApi) ApplyListEndpoint(c *gin.Context) {
+	account, found := GetCurrentAccount(c)
+	if !found {
+		Fail(c, -1, "获取当前登录账户失败")
+		return
+	}
+	list, err := repository.FridRepository.FindAllApply(context.TODO(), account.ID)
+	if err != nil {
+		ShowError(c, err)
+		return
+	}
+	Success(c, list)
+}
+func (frid FridApi) DeleteEndpoint(c *gin.Context) {
+	friend_id := c.Param("id")
+	account, found := GetCurrentAccount(c)
+	if !found {
+		Fail(c, -1, "获取当前登录账户失败")
+		return
+	}
+	if err := service.FridService.DeleteFridById(account.ID, friend_id); err != nil {
+		ShowError(c, err)
+		return
+	}
+	Success(c, "删除成功")
+}
+
+// 每天执行，将超过三天未处理的请求设置为过期
+func (frid FridApi) AutoExpireEndpoint() {
+	repository.FridRepository.AutoExpireEndpoint(context.TODO())
+}

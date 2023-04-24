@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"next-social/server/model"
+	"time"
 )
 
 var FridRepository = new(fridRepository)
@@ -26,19 +27,25 @@ func (r fridRepository) FindAll(c context.Context, id string) (o []model.User, e
 	return
 }
 
+func (r fridRepository) FindAllApply(c context.Context, userId string) (o []model.UserApply, err error) {
+	err = r.GetDB(c).Where("Created > ?", time.Now().AddDate(0, -1, 0)).Find(&o).Error
+	return
+}
+
 // 好友申请
 func (r fridRepository) Create(c context.Context, o *model.UserApply) error {
 	return r.GetDB(c).Create(o).Error
 }
 
-func (r fridRepository) FindByStatus(c context.Context, o *model.UserApply) (exist bool, err error) {
-	//userapply := model.UserApply{}
-	var count int8
-	err = r.GetDB(c).Table(o.TableName()).Select("count(*)").Where(&o).Find(&count).Error
-	if err != nil {
-		return false, err
-	}
-	return count <= 0, nil
+func (r fridRepository) FindByStatus(c context.Context, o *model.UserApply) (userapply model.UserApply, err error) {
+	//userapply = model.UserApply{}
+	//var count int8
+	err = r.GetDB(c).Where(&o).First(&userapply).Error
+	return
+	// if err != nil {
+	// 	return false, err
+	// }
+	// return count <= 0, nil
 }
 
 func (r fridRepository) Update(c context.Context, o *model.UserApply) (err error) {
@@ -48,4 +55,17 @@ func (r fridRepository) Update(c context.Context, o *model.UserApply) (err error
 // 增加好友关系
 func (r fridRepository) HandApple(c context.Context, o *model.UserRelation) (err error) {
 	return r.GetDB(c).Create(o).Error
+}
+
+func (r fridRepository) DeleteFrid(c context.Context, userId string, friend_id string) (err error) {
+	err = r.GetDB(c).Where("(UserID = ? and FriendID = ?) or (UserID = ? and FriendID = ?)", userId, friend_id, friend_id, userId).Delete(&model.UserRelation{}).Error
+	if err == nil {
+		err = r.GetDB(c).Table("user_apply").Where("(UserID = ? and FriendID = ?) or (UserID = ? and FriendID = ?)", userId, friend_id, friend_id, userId).Update("Status", 4).Error
+	}
+	return
+}
+
+// 超过三天未处理请求设置为过期
+func (r fridRepository) AutoExpireEndpoint(c context.Context) {
+	r.GetDB(c).Table("user_apply").Where("Created > ? and Status = ?", time.Now().AddDate(0, 0, -3), 0).Update("Status", 3)
 }

@@ -5,16 +5,22 @@ import (
 	mw "next-social/server/app/middleware"
 
 	"github.com/gin-gonic/gin"
+	"github.com/robfig/cron/v3"
 )
 
 func Run() {
 
 	//r := gin.Default()
+	gin.SetMode(gin.DebugMode) //开发环境
+	//gin.SetMode(gin.ReleaseMode) //线上环境
 	r := gin.New()
 	r.Use(mw.Auth)
+	c := cron.New()
 
 	UserApi := new(api.UserApi)
 	FridApi := new(api.FridApi)
+	c.AddFunc("30 0 * * *", FridApi.AutoExpireEndpoint) //好友请求过期
+	c.Start()
 
 	r.POST("/login", api.Login)
 	r.POST("/users", UserApi.CreateEndpoint)
@@ -36,7 +42,9 @@ func Run() {
 	{
 		frid.GET("", FridApi.AllFridEndpoint)          //好友列表
 		frid.POST("/apply", FridApi.ApplyEndpoint)     //好友申请
+		frid.GET("/list", FridApi.ApplyListEndpoint)   //好友申请列表
 		frid.PUT("/:id/status", FridApi.HandeEndpoint) //处理好友请求
+		frid.DELETE("/:id", FridApi.DeleteEndpoint)    //删除好友
 	}
 
 	r.GET("/pong", func(c *gin.Context) {
