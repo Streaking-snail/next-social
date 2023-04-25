@@ -101,7 +101,7 @@ func Login(c *gin.Context) {
 		Username:   user.Username,
 		Nickname:   user.Nickname,
 		Type:       user.Type,
-		EnableTotp: user.TOTPSecret != "" && user.TOTPSecret != "-",
+		//EnableTotp: user.TOTPSecret != "" && user.TOTPSecret != "-",
 		//Menus:      menus,
 	}
 

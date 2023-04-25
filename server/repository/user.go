@@ -70,13 +70,13 @@ func (r userRepository) Find(c context.Context, pageIndex, pageSize int, usernam
 		o = make([]model.UserForPage, 0)
 	}
 
-	for i := 0; i < len(o); i++ {
-		if o[i].TOTPSecret == "" || o[i].TOTPSecret == "-" {
-			o[i].TOTPSecret = "0"
-		} else {
-			o[i].TOTPSecret = "1"
-		}
-	}
+	// for i := 0; i < len(o); i++ {
+	// 	if o[i].TOTPSecret == "" || o[i].TOTPSecret == "-" {
+	// 		o[i].TOTPSecret = "0"
+	// 	} else {
+	// 		o[i].TOTPSecret = "1"
+	// 	}
+	// }
 	return
 }
 

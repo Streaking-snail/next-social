@@ -9,7 +9,7 @@ type User struct {
 	Username   string          `gorm:"index,type:varchar(200)" json:"username"`
 	Password   string          `gorm:"type:varchar(500)" json:"password"`
 	Nickname   string          `gorm:"type:varchar(500)" json:"nickname"`
-	TOTPSecret string          `json:"-"`
+	//TOTPSecret string          `json:"-"`
 	Online     *bool           `json:"online"`
 	Status     string          `gorm:"type:varchar(10)" json:"status"`
 	Created    common.JsonTime `json:"created"`
@@ -22,7 +22,7 @@ type UserForPage struct {
 	ID               string          `json:"id"`
 	Username         string          `json:"username"`
 	Nickname         string          `json:"nickname"`
-	TOTPSecret       string          `json:"totpSecret"`
+	//TOTPSecret       string          `json:"totpSecret"`
 	Mail             string          `json:"mail"`
 	Online           bool            `json:"online"`
 	Status           string          `json:"status"`
