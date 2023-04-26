@@ -19,6 +19,7 @@ func Run() {
 
 	UserApi := new(api.UserApi)
 	FridApi := new(api.FridApi)
+	TrendsApi := new(api.TrendsApi)
 	c.AddFunc("30 0 * * *", FridApi.AutoExpireEndpoint) //好友请求过期
 	c.Start()
 
@@ -35,7 +36,6 @@ func Run() {
 		users.PATCH("/:id/status", UserApi.UpdateStatusEndpoint)           //修改用户状态
 		users.POST("/:id/change-password", UserApi.ChangePasswordEndpoint) //修改用户密码
 		users.GET("/:id", UserApi.DetailsEndpoint)                         //用户详情
-
 	}
 
 	frid := r.Group("/frid")
@@ -45,6 +45,11 @@ func Run() {
 		frid.GET("/list", FridApi.ApplyListEndpoint)   //好友申请列表
 		frid.PUT("/:id/status", FridApi.HandeEndpoint) //处理好友请求
 		frid.DELETE("/:id", FridApi.DeleteEndpoint)    //删除好友
+	}
+
+	trends := r.Group("/trends")
+	{
+		trends.GET("", TrendsApi.AllTrendsEndpoint) //个人动态列表
 	}
 
 	r.GET("/pong", func(c *gin.Context) {
