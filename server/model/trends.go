@@ -26,3 +26,11 @@ type TrendsComment struct {
 func (t TrendsComment) TableName() string {
 	return "trends_comment"
 }
+
+type TrendsForPage struct {
+	Id      int             `json:"id"`
+	UserID  string          `json:"user_id"`
+	Created common.JsonTime `json:"created"`
+	Content string          `json:"content"`
+	Comment []TrendsComment
+}

@@ -49,7 +49,10 @@ func Run() {
 
 	trends := r.Group("/trends")
 	{
-		trends.GET("", TrendsApi.AllTrendsEndpoint) //个人动态列表
+		trends.GET("/paging", TrendsApi.AllTrendsEndpoint) //个人动态列表
+		trends.POST("", TrendsApi.CreateEndpoint)          //个人动态发布
+		// trends.POST("/comment", CommentEndpoint)           //评论
+
 	}
 
 	r.GET("/pong", func(c *gin.Context) {
