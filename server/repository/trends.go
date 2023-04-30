@@ -11,16 +11,28 @@ type trendsRepository struct {
 	baseRepository
 }
 
-func (r trendsRepository) Find(c context.Context, userId string, pageIndex, pageSize int) (items []model.TrendsForPage, err error) {
-	m := model.Trends{}
-	db := r.GetDB(c).Table(m.TableName()).Select("trends.id, trends.user_id, trends.created, trends.content, com.trends_id, com.created as comment_created, com.content as comment_content").
-		Joins("left join TrendsComment as com on trends.id = com.trends_id")
-	err = db.Where("trends.user_id = ?", userId).Order("trends.id desc").Find(&items).Offset((pageIndex - 1) * pageSize).Limit(pageSize).Error
+func (r trendsRepository) FindTrends(c context.Context, userId string, pageIndex, pageSize int) (o []model.Trends, err error) {
+	err = r.GetDB(c).Select("id, user_id, created, content").
+		Where("user_id = ?", userId).Order("id desc").
+		Find(&o).Offset((pageIndex - 1) * pageSize).Limit(pageSize).Error
 	return
-	// err = r.GetDB(c).Find(&o).Error
-	// return
+}
+
+func (r trendsRepository) FindComment(c context.Context, trend_ids []int) (o []model.TrendsComment, err error) {
+	err = r.GetDB(c).Where("trends_id in (?)", trend_ids).Order("id desc").Find(&o).Error
+	return
 }
 
 func (r trendsRepository) Create(c context.Context, o *model.Trends) (err error) {
 	return r.GetDB(c).Create(&o).Error
+}
+
+func (r trendsRepository) GetFrid(c context.Context, trends_id int) (trends model.Trends, err error) {
+	err = r.GetDB(c).Select("user_id").Where("id = ?", trends_id).First(&trends).Error
+	return
+}
+
+func (r trendsRepository) CreateComment(c context.Context, o *model.TrendsComment) (err error) {
+	err = r.GetDB(c).Create(&o).Error
+	return
 }

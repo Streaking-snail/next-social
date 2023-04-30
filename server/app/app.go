@@ -51,7 +51,7 @@ func Run() {
 	{
 		trends.GET("/paging", TrendsApi.AllTrendsEndpoint) //个人动态列表
 		trends.POST("", TrendsApi.CreateEndpoint)          //个人动态发布
-		// trends.POST("/comment", CommentEndpoint)           //评论
+		trends.POST("/comment", TrendsApi.CommentEndpoint) //评论
 
 	}
 

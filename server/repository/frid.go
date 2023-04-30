@@ -58,11 +58,23 @@ func (r fridRepository) HandApple(c context.Context, o *model.UserRelation) (err
 }
 
 func (r fridRepository) DeleteFrid(c context.Context, userId string, friend_id string) (err error) {
-	err = r.GetDB(c).Where("(UserID = ? and FriendID = ?) or (UserID = ? and FriendID = ?)", userId, friend_id, friend_id, userId).Delete(&model.UserRelation{}).Error
+	err = r.GetDB(c).Where("(user_id = ? and FriendID = ?) or (user_id = ? and FriendID = ?)", userId, friend_id, friend_id, userId).Delete(&model.UserRelation{}).Error
 	if err == nil {
-		err = r.GetDB(c).Table("user_apply").Where("(UserID = ? and FriendID = ?) or (UserID = ? and FriendID = ?)", userId, friend_id, friend_id, userId).Update("Status", 4).Error
+		err = r.GetDB(c).Table("user_apply").Where("(user_id = ? and friend_id = ?) or (user_id = ? and friend_id = ?)", userId, friend_id, friend_id, userId).Update("Status", 4).Error
 	}
 	return
+}
+
+func (r fridRepository) ExistByFrid(c context.Context, userId, friend_id string) (exist bool, err error) {
+	userRelation := model.UserRelation{}
+	var count uint64
+	err = r.GetDB(c).Table(userRelation.TableName()).Select("count(*)").
+		Where("(user_id = ? and friend_id = ?) or (user_id = ? and friend_id = ?)", userId, friend_id, friend_id, userId).
+		Find(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
 }
 
 // 超过三天未处理请求设置为过期
