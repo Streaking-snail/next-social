@@ -16,6 +16,7 @@ func (t Trends) TableName() string {
 type TrendsComment struct {
 	Id       int             `gorm:"primary_key;auto_increment;not null;type:int(11)" json:"id"`
 	TrendsID int             `gorm:"index;not null;type:int(11)" json:"trends_id"`
+	UserID   string          `gorm:"type:varchar(36)" json:"user_id"`
 	Created  common.JsonTime `json:"created"`
 	Content  string          `gorm:"type:varchar(1024)" json:"content"`
 	ParendID uint8           `gorm:"type:tinyint(3)" json:"parend_id"`

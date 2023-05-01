@@ -13,7 +13,7 @@ type trendsService struct {
 	baseService
 }
 
-func (trends trendsService) GetTrends(userId string, pageIndex, pageSize int) (items []model.TrendsForPage, err error) {
+func (trends trendsService) GetTrends(userId []string, pageIndex, pageSize int) (items []model.TrendsForPage, err error) {
 	trend, err := repository.TrendsRepository.FindTrends(context.TODO(), userId, pageIndex, pageSize)
 	if err != nil {
 		return nil, err

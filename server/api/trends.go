@@ -23,9 +23,20 @@ func (t TrendsApi) AllTrendsEndpoint(c *gin.Context) {
 	pageIndex, _ := strconv.Atoi(c.Query("pageIndex"))
 	pageSize, _ := strconv.Atoi(c.Query("pageSize"))
 
-	// online := c.Query("online")
+	user_ids := []string{account.ID}
+	fird := c.Query("fird")
+	if fird != "" {
+		find_ids, err := repository.FridRepository.FindAll(context.TODO(), account.ID)
+		if err != nil {
+			Fail(c, -1, "获取当前登录账户失败")
+			return
+		}
+		for _, v := range find_ids {
+			user_ids = append(user_ids, v.ID)
+		}
+	}
 
-	items, err := service.TrendsService.GetTrends(account.ID, pageIndex, pageSize)
+	items, err := service.TrendsService.GetTrends(user_ids, pageIndex, pageSize)
 	if err != nil {
 		ShowError(c, err)
 		return
@@ -75,6 +86,7 @@ func (t TrendsApi) CommentEndpoint(c *gin.Context) {
 	}
 	var trendsComment = model.TrendsComment{
 		TrendsID: trends_id,
+		UserID:   account.ID,
 		Created:  common.NowJsonTime(),
 		Content:  Content,
 		ParendID: uint8(ParendID),
@@ -84,4 +96,21 @@ func (t TrendsApi) CommentEndpoint(c *gin.Context) {
 		return
 	}
 	Success(c, "评论成功")
+}
+
+func (t TrendsApi) DeleteEndpoint(c *gin.Context) {
+	account, found := GetCurrentAccount(c)
+	if !found {
+		Fail(c, -1, "获取当前登录账户失败")
+		return
+	}
+	del_type := c.Param("type")
+	id := c.Param("id")
+	del_id, _ := strconv.Atoi(id)
+	if err := repository.TrendsRepository.DeleteById(context.TODO(), del_type, account.ID, del_id); err != nil {
+		ShowError(c, err)
+		return
+	}
+	Success(c, "删除成功")
+
 }

@@ -11,9 +11,9 @@ type trendsRepository struct {
 	baseRepository
 }
 
-func (r trendsRepository) FindTrends(c context.Context, userId string, pageIndex, pageSize int) (o []model.Trends, err error) {
+func (r trendsRepository) FindTrends(c context.Context, userId []string, pageIndex, pageSize int) (o []model.Trends, err error) {
 	err = r.GetDB(c).Select("id, user_id, created, content").
-		Where("user_id = ?", userId).Order("id desc").
+		Where("user_id in (?)", userId).Order("id desc").
 		Find(&o).Offset((pageIndex - 1) * pageSize).Limit(pageSize).Error
 	return
 }
@@ -34,5 +34,14 @@ func (r trendsRepository) GetFrid(c context.Context, trends_id int) (trends mode
 
 func (r trendsRepository) CreateComment(c context.Context, o *model.TrendsComment) (err error) {
 	err = r.GetDB(c).Create(&o).Error
+	return
+}
+
+func (r trendsRepository) DeleteById(c context.Context, del_type, userId string, id int) (err error) {
+	if del_type == "trend" {
+		err = r.GetDB(c).Where("id = ? and user_id = ?", id, userId).Delete(&model.Trends{}).Error
+	} else {
+		err = r.GetDB(c).Where("id = ? and user_id = ?", id, userId).Delete(&model.TrendsComment{}).Error
+	}
 	return
 }
