@@ -28,7 +28,7 @@ func (t TrendsApi) AllTrendsEndpoint(c *gin.Context) {
 	if fird != "" {
 		find_ids, err := repository.FridRepository.FindAll(context.TODO(), account.ID)
 		if err != nil {
-			Fail(c, -1, "获取当前登录账户失败")
+			ShowError(c, err)
 			return
 		}
 		for _, v := range find_ids {
@@ -89,7 +89,7 @@ func (t TrendsApi) CommentEndpoint(c *gin.Context) {
 		UserID:   account.ID,
 		Created:  common.NowJsonTime(),
 		Content:  Content,
-		ParendID: uint8(ParendID),
+		ParendID: ParendID,
 	}
 	if err := service.TrendsService.CreateComment(&trendsComment, account.ID); err != nil {
 		ShowError(c, err)

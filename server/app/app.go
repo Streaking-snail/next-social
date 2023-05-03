@@ -53,7 +53,11 @@ func Run() {
 		trends.POST("", TrendsApi.CreateEndpoint)             //个人动态发布
 		trends.POST("/comment", TrendsApi.CommentEndpoint)    //评论
 		trends.DELETE("/:type/:id", TrendsApi.DeleteEndpoint) //删除
+	}
 
+	topics := r.Group("/topics", mw.Admin)
+	{
+		topics.POST("", TopicsApi.CreateEndpoint) //创建话题
 	}
 
 	r.GET("/pong", func(c *gin.Context) {
