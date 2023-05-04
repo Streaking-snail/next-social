@@ -20,6 +20,7 @@ func Run() {
 	UserApi := new(api.UserApi)
 	FridApi := new(api.FridApi)
 	TrendsApi := new(api.TrendsApi)
+	TopicsApi := new(api.TopicsApi)
 	c.AddFunc("30 0 * * *", FridApi.AutoExpireEndpoint) //好友请求过期
 	c.Start()
 

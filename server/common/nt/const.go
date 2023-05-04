@@ -7,15 +7,6 @@ type Key string
 const (
 	DB Key = "db"
 
-	SSH    = "ssh"
-	RDP    = "rdp"
-	VNC    = "vnc"
-	Telnet = "telnet"
-	K8s    = "kubernetes"
-
-	AccessRuleAllow  = "allow"  // 允许访问
-	AccessRuleReject = "reject" // 拒绝访问
-
 	Custom     = "custom"      // 密码
 	PrivateKey = "private-key" // 密钥
 
@@ -24,7 +15,6 @@ const (
 	FuncShellJob        = "shell-job"   // 执行Shell脚本
 	JobModeSelf         = "self"        // 本机
 
-	SshMode      = "ssh-mode"      // ssh模式
 	MailHost     = "mail-host"     // 邮件服务器地址
 	MailPort     = "mail-port"     // 邮件服务器端口
 	MailUsername = "mail-username" // 邮件服务账号
