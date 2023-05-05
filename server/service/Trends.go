@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"fmt"
+	"next-social/server/common"
 	"next-social/server/model"
 	"next-social/server/repository"
 )
@@ -14,6 +15,7 @@ type trendsService struct {
 }
 
 func (trends trendsService) GetTrends(userId []string, pageIndex, pageSize int) (items []model.TrendsForPage, err error) {
+	//查询符合条件的动态
 	trend, err := repository.TrendsRepository.FindTrends(context.TODO(), userId, pageIndex, pageSize)
 	if err != nil {
 		return nil, err
@@ -26,8 +28,14 @@ func (trends trendsService) GetTrends(userId []string, pageIndex, pageSize int) 
 	for _, v := range trend {
 		trend_ids = append(trend_ids, v.Id)
 	}
-
+	//查询评论
 	trendsComment, err := repository.TrendsRepository.FindComment(context.TODO(), trend_ids)
+	if err != nil {
+		return nil, err
+	}
+
+	//查询点赞
+	trendsLike, err := repository.TrendsRepository.FindLikes(context.TODO(), trend_ids)
 	if err != nil {
 		return nil, err
 	}
@@ -40,8 +48,40 @@ func (trends trendsService) GetTrends(userId []string, pageIndex, pageSize int) 
 				items[i].Comment = append(items[i].Comment, v)
 			}
 		}
+
+		for _, z := range trendsLike {
+			if z.TrendsID == j.Id {
+				items[i].Likes = append(items[i].Likes, j.UserID)
+			}
+		}
 	}
+
 	return
+}
+
+func (trends trendsService) Linkes(like_type string, TrendsID int, userId string) error {
+
+	//动态是否存在
+	exist, err := repository.TrendsRepository.FindTrendsById(context.TODO(), TrendsID)
+	if !exist {
+		return fmt.Errorf("动态不存在")
+	}
+	if err != nil {
+		return err
+	}
+
+	trendsLikes := model.TrendsLikes{
+		TrendsID: TrendsID,
+		UserID:   userId,
+	}
+	if like_type == "insert" {
+		trendsLikes.Created = common.NowJsonTime()
+	}
+	err = repository.TrendsRepository.Linkes(context.TODO(), &trendsLikes, like_type)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (trends trendsService) CreateComment(trendsComment *model.TrendsComment, user_id string) error {

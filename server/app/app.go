@@ -50,10 +50,11 @@ func Run() {
 
 	trends := r.Group("/trends")
 	{
-		trends.GET("/paging", TrendsApi.AllTrendsEndpoint)    //个人(好友)动态列表
-		trends.POST("", TrendsApi.CreateEndpoint)             //个人动态发布
-		trends.POST("/comment", TrendsApi.CommentEndpoint)    //评论
-		trends.DELETE("/:type/:id", TrendsApi.DeleteEndpoint) //删除
+		trends.GET("/paging", TrendsApi.AllTrendsEndpoint)               //个人(好友)动态列表
+		trends.POST("", TrendsApi.CreateEndpoint)                        //个人动态发布
+		trends.POST("/comment", TrendsApi.CommentEndpoint)               //评论
+		trends.POST("/likes/:type/:trends_id", TrendsApi.LinkesEndpoint) //点赞/取消点赞
+		trends.DELETE("/:type/:id", TrendsApi.DeleteEndpoint)            //删除
 	}
 
 	topics := r.Group("/topics", mw.Admin)

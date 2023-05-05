@@ -42,7 +42,7 @@ func setupDB() *gorm.DB {
 	}
 
 	if err := db.AutoMigrate(&model.User{}, &model.LoginLog{}, &model.UserRelation{}, &model.UserApply{}, &model.ChitChat{},
-		&model.Trends{}, &model.TrendsComment{}, &model.Topics{}); err != nil {
+		&model.Trends{}, &model.TrendsComment{}, &model.Topics{}, &model.TrendsLikes{}); err != nil {
 		panic(fmt.Errorf("初始化数据库表结构异常: %v", err.Error()))
 	}
 	return db

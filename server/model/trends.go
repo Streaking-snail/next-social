@@ -43,4 +43,5 @@ type TrendsForPage struct {
 	Created common.JsonTime `json:"created"`
 	Content string          `json:"content"`
 	Comment []TrendsComment
+	Likes   []string
 }

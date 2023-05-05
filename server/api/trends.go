@@ -55,7 +55,7 @@ func (t TrendsApi) CreateEndpoint(c *gin.Context) {
 		Fail(c, -1, "内容不能为空")
 		return
 	}
-	var Trends = model.Trends{
+	Trends := model.Trends{
 		UserID:  account.ID,
 		Content: content,
 		Created: common.NowJsonTime(),
@@ -96,6 +96,21 @@ func (t TrendsApi) CommentEndpoint(c *gin.Context) {
 		return
 	}
 	Success(c, "评论成功")
+}
+func (t TrendsApi) LinkesEndpoint(c *gin.Context) {
+	account, found := GetCurrentAccount(c)
+	if !found {
+		Fail(c, -1, "获取当前登录账户失败")
+		return
+	}
+	like_type := c.Param("type")
+	trends_id := c.Param("trends_id")
+	TrendsID, _ := strconv.Atoi(trends_id)
+	if err := service.TrendsService.Linkes(like_type, TrendsID, account.ID); err != nil {
+		ShowError(c, err)
+		return
+	}
+	Success(c, "操作成功")
 }
 
 func (t TrendsApi) DeleteEndpoint(c *gin.Context) {

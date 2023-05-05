@@ -18,13 +18,30 @@ func (r trendsRepository) FindTrends(c context.Context, userId []string, pageInd
 	return
 }
 
+func (r trendsRepository) FindTrendsById(c context.Context, trends_id int) (exist bool, err error) {
+	trends := model.Trends{}
+	var count uint64
+	err = r.GetDB(c).Table(trends.TableName()).Select("count(*)").
+		Where("id = ?", trends_id).Find(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
+
 func (r trendsRepository) FindComment(c context.Context, trend_ids []int) (o []model.TrendsComment, err error) {
 	err = r.GetDB(c).Where("trends_id in (?)", trend_ids).Order("id desc").Find(&o).Error
 	return
 }
 
+func (r trendsRepository) FindLikes(c context.Context, trend_ids []int) (o []model.TrendsLikes, err error) {
+	err = r.GetDB(c).Where("trends_id in (?)", trend_ids).Order("id desc").Find(&o).Error
+	return
+}
+
 func (r trendsRepository) Create(c context.Context, o *model.Trends) (err error) {
-	return r.GetDB(c).Create(&o).Error
+	err = r.GetDB(c).Create(&o).Error
+	return
 }
 
 func (r trendsRepository) GetFrid(c context.Context, trends_id int) (trends model.Trends, err error) {
@@ -34,6 +51,14 @@ func (r trendsRepository) GetFrid(c context.Context, trends_id int) (trends mode
 
 func (r trendsRepository) CreateComment(c context.Context, o *model.TrendsComment) (err error) {
 	err = r.GetDB(c).Create(&o).Error
+	return
+}
+func (r trendsRepository) Linkes(c context.Context, o *model.TrendsLikes, like_type string) (err error) {
+	if like_type == "insert" {
+		err = r.GetDB(c).Create(&o).Error
+	} else {
+		err = r.GetDB(c).Where(&o).Delete(&model.TrendsLikes{}).Error
+	}
 	return
 }
 
