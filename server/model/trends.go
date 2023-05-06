@@ -3,7 +3,7 @@ package model
 import "next-social/server/common"
 
 type Trends struct {
-	Id      int             `gorm:"primary_key;auto_increment;not null;type:int(11)" json:"id"`
+	Id      int             `gorm:"primary_key;auto_increment;7type:int(11)" json:"id"`
 	UserID  string          `gorm:"index;not null;type:varchar(36)" json:"user_id"` //发布者id
 	Created common.JsonTime `json:"created"`                                        //发布时间
 	Content string          `gorm:"type:varchar(1024)" json:"content"`              //动态内容

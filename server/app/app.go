@@ -59,7 +59,9 @@ func Run() {
 
 	topics := r.Group("/topics", mw.Admin)
 	{
-		topics.POST("", TopicsApi.CreateEndpoint) //创建话题
+		topics.POST("", TopicsApi.CreateEndpoint)            //创建话题
+		topics.DELETE("/:id", TopicsApi.DeleteEndpoint)      //删除话题
+		topics.PATCH("/:id", TopicsApi.UpdateStatusEndpoint) //屏蔽话题
 	}
 
 	r.GET("/pong", func(c *gin.Context) {
